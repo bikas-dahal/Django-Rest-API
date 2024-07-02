@@ -3,13 +3,57 @@ from django.http import HttpResponse, JsonResponse
 from .models import Student
 from .serializers import StudentSerializer
 import io
+
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
+from rest_framework.decorators import api_view 
+from rest_framework.response import Response
+from rest_framework import status 
+
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.views import View
 
 # Create your views here.
+
+@api_view(['GET', 'POST', 'PUT', 'DELETE'])
+def student(request):
+    if request.method == 'GET':
+        id = request.GET.get('id', None)
+        if id is not None:
+            stu = Student.objects.get(id=id)
+            serializer = StudentSerializer(stu)
+            return Response(serializer.data)
+        stu = Student.objects.all()
+        serializer = StudentSerializer(stu, many=True)
+        return Response(serializer.data)
+        
+    if request.method == 'POST':
+        serializer = StudentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    if request.method == 'PUT':
+        id = request.data.get('id', None)
+        stu = Student.objects.get(id=id)
+        serializer = StudentSerializer(stu, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                'msg':'data updated'
+            })
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    if request.method == 'DELETE':
+        id = request.data.get('id', None)
+        stu = Student.objects.get(id=id)
+        stu.delete()
+        return Response({
+            'msg':'data deleted'
+        })
+
 @csrf_exempt
 def student_create(request):
     if request.method == 'POST':

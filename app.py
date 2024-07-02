@@ -1,47 +1,51 @@
 import requests 
 import json
 
-URL = 'http://127.0.0.1:8000/student/'
+URL = 'http://127.0.0.1:8000/students/'
 
 def getStudent(id = None):
     data = {}
     if id is not None:
         data = {'id':id}
     json_data = json.dumps(data)
-    r = requests.get(url = URL, data = json_data)
+    headers = {'Content-Type': 'application/json'}
+    r = requests.get(url = URL, headers = headers, data = json_data)
     data = r.json()
     print(data)
     
 
-# getStudent()
+# getStudent(3)
 
 def postStudent():
     data = {
-        'name':'lally',
-        'roll': 2,
-        'city':'KTM',
+        'name':'ozo3de',
+        'roll': 22,
+        'city':'KM',
         'grade': 11
     }
     
-    json_data = json.dumps(data)
-    r = requests.post(url = URL, data = json_data)
+    headers = {'Content-Type': 'application/json'}
+    
+    json_data = json.dumps(data) 
+    r = requests.post(url = URL, headers = headers, data = json_data)
     data = r.json()
     print(data)
     
 
-postStudent()
+# postStudent()
 
 def updateStudent():
     data = {
-        'id': 2,
+        'id': 3,
         'name':'SSMB9',
         'roll': 22,
         'city':'KTM',
         'grade': 11
     }
+    headers = {'Content-Type': 'application/json'}
     
     json_data = json.dumps(data)
-    r = requests.put(url = URL, data = json_data)
+    r = requests.put(url = URL, headers = headers, data = json_data)
     data = r.json()
     print(data)
 
@@ -49,13 +53,14 @@ def updateStudent():
 
 def deleteStudent():
     data = {
-        'id': 1
+        'id': 15
     }
     
     json_data = json.dumps(data)
-    r = requests.delete(url = URL, data = json_data)
+    headers = {'Content-Type': 'application/json'}
+    r = requests.delete(url = URL, headers = headers, data = json_data)
     data = r.json()
     print(data)
 
-# deleteStudent()
+deleteStudent()
     

@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # path('student/', views.student_list),
     path('student/', views.StudentAPI.as_view()),
+    path('students/', views.student),
     # path('student/', views.student_api),
     path('student_create/', views.student_create),
     path('student/<int:id>/', views.student_detail),
