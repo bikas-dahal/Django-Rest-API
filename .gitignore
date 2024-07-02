@@ -1,0 +1,4 @@
+#add git ignore for django project
+
+/django-env
+.env 
