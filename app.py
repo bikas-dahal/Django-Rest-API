@@ -13,12 +13,12 @@ def getStudent(id = None):
     print(data)
     
 
-# getStudent(1)
+# getStudent()
 
 def postStudent():
     data = {
-        'name':'Hari',
-        'roll': 102,
+        'name':'lally',
+        'roll': 2,
         'city':'KTM',
         'grade': 11
     }
@@ -29,13 +29,13 @@ def postStudent():
     print(data)
     
 
-# postStudent()
+postStudent()
 
 def updateStudent():
     data = {
-        'id': 1,
-        'name':'Syamm',
-        'roll': 102,
+        'id': 2,
+        'name':'SSMB9',
+        'roll': 22,
         'city':'KTM',
         'grade': 11
     }
@@ -57,5 +57,5 @@ def deleteStudent():
     data = r.json()
     print(data)
 
-deleteStudent()
+# deleteStudent()
     

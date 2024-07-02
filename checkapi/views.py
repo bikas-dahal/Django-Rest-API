@@ -90,9 +90,9 @@ class StudentAPI(View):
         stu.delete()
         res = {'msg':'data deleted'}
         # json_data = JSONRenderer().render(res)
-        # json_data = JSONRenderer().render(res)
         # return HttpResponse(json_data, content_type='application/json')
         return JsonResponse(res, safe=False)
+    
     
     
 # @csrf_exempt   

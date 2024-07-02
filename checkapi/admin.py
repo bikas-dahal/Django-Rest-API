@@ -4,7 +4,7 @@ from .models import Student
 # Register your models here.
 @admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):
-    list_display = ['name', 'roll', 'city', 'grade']
+    list_display = ['name', 'roll', 'city', 'grade', 'id']
     list_filter = ['city', 'grade']
     search_fields = ['name']
     ordering = ['name']
