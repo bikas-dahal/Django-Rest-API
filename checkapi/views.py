@@ -18,37 +18,89 @@ from django.views import View
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, UpdateModelMixin, RetrieveModelMixin, DestroyModelMixin
 
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
-# Create your views here.
+from rest_framework import viewsets
 
-# List and create
-class LCStudentList(GenericAPIView, ListModelMixin, CreateModelMixin, UpdateModelMixin, RetrieveModelMixin, DestroyModelMixin):
+from rest_framework.authentication import BasicAuthentication, SessionAuthentication, TokenAuthentication
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly, DjangoModelPermissions, DjangoModelPermissionsOrAnonReadOnly
+
+from rest_framework.authentication import TokenAuthentication
+
+from .cust_perm import MyPermission
+
+from checkapi.auth import CustomAuthentication
+
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
+#Viewset logic
+class StudentViewSet(viewsets.ModelViewSet):
     queryset = Student.objects.all()
-    serializer_class = StudentSerializer 
+    serializer_class = StudentSerializer
+    
+    authentication_classes = [JWTAuthentication]
+    # authentication_classes = [CustomAuthentication]
+    # authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+    # authentication_classes = [SessionAuthentication]
+    # permission_classes = [MyPermission]
+    # permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+    # permission_classes = [IsAdminUser]
+    # permission_classes = [IsAuthenticatedOrReadOnly]
+    
+    # authentication_class = [BasicAuthentication]
+    # permission_classes = [
+    #     IsAuthenticated
+    #     # IsAdminUser
+    #     # IsAuthenticatedOrReadOnly
+    #     # DjangoModelPermissions
+    #     # DjangoModelPermissionsOrAnonReadOnly
+    # ]
+    
 
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
 
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
+# Concrete View class
 
-class URDStudent(GenericAPIView, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin):
+class LCStudentList(ListCreateAPIView):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
 
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
 
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
+class URDStudent(RetrieveUpdateDestroyAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+
+# List and create
+# class LCStudentList(GenericAPIView, ListModelMixin, CreateModelMixin, UpdateModelMixin, RetrieveModelMixin, DestroyModelMixin):
+#     queryset = Student.objects.all()
+#     serializer_class = StudentSerializer 
+
+#     def get(self, request, *args, **kwargs):
+#         return self.list(request, *args, **kwargs)
+
+#     def post(self, request, *args, **kwargs):
+#         return self.create(request, *args, **kwargs)
+
+# class URDStudent(GenericAPIView, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin):
+#     queryset = Student.objects.all()
+#     serializer_class = StudentSerializer
+
+#     def get(self, request, *args, **kwargs):
+#         return self.retrieve(request, *args, **kwargs)
+
+#     def put(self, request, *args, **kwargs):
+#         return self.update(request, *args, **kwargs)
     
-    def patch(self, request, *args, **kwargs):
-        return self.partial_update(request, *args, **kwargs)
+#     def patch(self, request, *args, **kwargs):
+#         return self.partial_update(request, *args, **kwargs)
     
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
+#     def delete(self, request, *args, **kwargs):
+#         return self.destroy(request, *args, **kwargs)
 
 
+
+# Generic Class APIView for students
 class StudentAPI(APIView):
     def get(self, request, id=None, format=None):
         if id is not None:
@@ -94,6 +146,7 @@ class StudentAPI(APIView):
         })
         
 
+# Function based API_View
 @api_view(['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])
 def student(request, id = None):
     if request.method == 'GET':

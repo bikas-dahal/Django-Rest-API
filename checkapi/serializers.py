@@ -7,8 +7,7 @@ class StudentSerializer(serializers.ModelSerializer):
     def vs(value):
         if value[0] == 'z':
             raise serializers.ValidationError('No name start with z')
-
-    
+        return value
     
     name = serializers.CharField(validators = [vs])
     class Meta:
