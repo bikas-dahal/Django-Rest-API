@@ -1,7 +1,11 @@
 from rest_framework import serializers
 
-from .models import Student
+from .models import Student, People
 
+class PeopleSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = People
+        fields = ['id', 'url', 'name', 'city', 'age']
 
 class StudentSerializer(serializers.ModelSerializer):
     def vs(value):

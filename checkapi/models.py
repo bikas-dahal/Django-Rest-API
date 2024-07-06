@@ -4,6 +4,14 @@ from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 from django.conf import settings
 
+class People(models.Model):
+    name = models.CharField(max_length=50)
+    city = models.CharField(max_length=50)
+    age = models.IntegerField()
+    
+    def __str__(self):
+        return self.name
+
 class Student(models.Model):
     name = models.CharField(max_length=50)
     roll = models.IntegerField()

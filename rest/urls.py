@@ -13,7 +13,7 @@ router = DefaultRouter()
 
 # register student view set with router
 router.register('student', views.StudentViewSet, basename='student')
-
+router.register('people', views.PeopleViewSet, basename='people')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

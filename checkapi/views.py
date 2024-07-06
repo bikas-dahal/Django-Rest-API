@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
-from .models import Student
-from .serializers import StudentSerializer
+from .models import Student, People
+from .serializers import StudentSerializer, PeopleSerializer
 import io
 
 from rest_framework.renderers import JSONRenderer
@@ -30,24 +30,41 @@ from rest_framework.authentication import TokenAuthentication
 from .cust_perm import MyPermission
 
 from checkapi.auth import CustomAuthentication
+from checkapi.throttling import SyamRateThrottle
 
 from rest_framework_simplejwt.authentication import JWTAuthentication
+
+from rest_framework.throttling import AnonRateThrottle, UserRateThrottle, ScopedRateThrottle
+
+from django_filters.rest_framework import DjangoFilterBackend
+
+from rest_framework.filters import SearchFilter, OrderingFilter
+from .pagination import MyPagination, MyPaginationLimit, MyPaginationCursor
+
+
+class PeopleViewSet(viewsets.ModelViewSet):
+    queryset = People.objects.all()
+    serializer_class = PeopleSerializer 
+
 
 #Viewset logic
 class StudentViewSet(viewsets.ModelViewSet):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
     
-    authentication_classes = [JWTAuthentication]
+    throttle_classes = [AnonRateThrottle, UserRateThrottle, ScopedRateThrottle]
+    # throttle_classes = [SyamRateThrottle, UserRateThrottle, ScopedRateThrottle]
+
+    # authentication_classes = [JWTAuthentication]
     # authentication_classes = [CustomAuthentication]
     # authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     
-    # authentication_classes = [SessionAuthentication]
+    authentication_classes = [SessionAuthentication]
     # permission_classes = [MyPermission]
     # permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
     # permission_classes = [IsAdminUser]
-    # permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     
     # authentication_class = [BasicAuthentication]
     # permission_classes = [
@@ -65,6 +82,25 @@ class StudentViewSet(viewsets.ModelViewSet):
 class LCStudentList(ListCreateAPIView):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
+    filter_backends = [SearchFilter, OrderingFilter]
+    ordering_fields = ['city', 'roll']
+    pagination_class = MyPaginationCursor
+    # pagination_class = MyPaginationLimit
+    # pagination_class = MyPagination
+     
+    
+    search_fields = ['^city']
+    # search_fields = ['city', 'roll']
+    # filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['city', 'roll']
+    
+    def get_queryset(self):
+        user = self.request.user 
+        # city = user.city
+        return Student.objects.all() 
+        
+    
+    
 
 
 class URDStudent(RetrieveUpdateDestroyAPIView):
